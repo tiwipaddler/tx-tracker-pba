@@ -5,10 +5,12 @@ import type {
   NewBlockEvent,
   NewTransactionEvent,
   OutputAPI,
+  Settled,
 } from "../types"
 
 export default function yourGhHandle(api: API, outputApi: OutputAPI) {
   return (event: IncomingEvent) => {
+
     // Requirements:
     //
     // 1) When a transaction becomes "settled"-which always occurs upon receiving a "newBlock" event-
@@ -36,10 +38,35 @@ export default function yourGhHandle(api: API, outputApi: OutputAPI) {
     // - Upon receiving a "finalized" event, call `api.unpin` to unpin blocks that are either:
     //     a) pruned, or
     //     b) older than the currently finalized block.
+  
+    const onNewBlock = (outputApi: OutputAPI) => ({ blockHash, parent }: NewBlockEvent) => {
+   
+      type NewBlockEvent = {
+        blockHash: string;
+        parent: string;
+      };
+      
+      type Settled = "success" | "failure";
+      
+      type OutputAPI = {
+        onTxSettled: (transaction: string, state: Settled) => void;
+      };
 
-    const onNewBlock = ({ blockHash, parent }: NewBlockEvent) => {
-      // TODO:: implement it
-    }
+    return (outputApi: OutputAPI) => 
+        //console.log(`New block detected: ${blockHash}, Parent: ${parent}`);
+        
+        outputApi.onTxSettled;
+
+ 
+    ////trial 4/////
+      // blockHash: string;
+      // parent: string;
+      // transaction: string;
+      // state: Settled;
+    
+
+
+    ///////////////////////////
 
     const onNewTx = ({ value: transaction }: NewTransactionEvent) => {
       // TODO:: implement it
